@@ -56,7 +56,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Library1.fs" />
+    <Compile Include="Mancala.Tests.fs" />
     <None Include="Script.fsx" />
     <None Include="packages.config" />
   </ItemGroup>
