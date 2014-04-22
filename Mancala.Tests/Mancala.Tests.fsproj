@@ -60,6 +60,13 @@
     <None Include="Script.fsx" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Mancala\Mancala.fsproj">
+      <Name>Mancala</Name>
+      <Project>{8695bc2f-688d-412f-b31c-27576cc134d2}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
   </PropertyGroup>
