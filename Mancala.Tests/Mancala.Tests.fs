@@ -47,3 +47,15 @@ let PlayerCanPlayEmptyPit() =
     let state = new BoardState(3)
     let allowed = CanPlay state 1 5 
     Assert.True(allowed)
+
+[<Fact>]
+let BoardWithNonEmptyPitsIsNotFinished() =
+    let state = new BoardState(3)
+    let finished = IsFinished state
+    Assert.False(finished)
+
+[<Fact>]
+let BoardWithEmptyPitsOnOneSideIsFinished() =
+    let state = new BoardState(0)
+    let finished = IsFinished state
+    Assert.True(finished)
