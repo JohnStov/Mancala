@@ -74,9 +74,16 @@ let PlayRedistributesStonesIntoScoring() =
     Assert.Equal<int[]> ([|1;4;4;0;3;3;3|], newState.Sides.[0])
     Assert.Equal<int[]> ([|0;3;3;3;3;3;3|], newState.Sides.[1])
 
-//[<Fact>]
-//let PlayRedistributesStonesIntoOpponentsSide() =
-//    let state = CreateBoard(3)
-//    let newState = Play state 0 1
-//    Assert.Equal<int[]> ([|1;0;3;3;3;3;3|], newState.Sides.[0])
-//    Assert.Equal<int[]> ([|0;3;3;3;3;4;4|], newState.Sides.[1])
+[<Fact>]
+let PlayRedistributesStonesIntoOpponentsSide() =
+    let state = CreateBoard(3)
+    let newState = Play state 0 1
+    Assert.Equal<int[]> ([|1;0;3;3;3;3;3|], newState.Sides.[0])
+    Assert.Equal<int[]> ([|0;3;3;3;3;4;4|], newState.Sides.[1])
+
+[<Fact>]
+let PlayRedistributesStonesIntoBothSides() =
+    let state = CreateBoard(3)
+    let newState = Play state 0 2
+    Assert.Equal<int[]> ([|1;4;0;3;3;3;3|], newState.Sides.[0])
+    Assert.Equal<int[]> ([|0;3;3;3;3;3;4|], newState.Sides.[1])
