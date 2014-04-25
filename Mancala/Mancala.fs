@@ -3,11 +3,10 @@
 type BoardState(side1, side2) = 
     member x.Sides = [| side1; side2 |]
 
-let CreateBoard(stonesPerPit : int) =
-    let CreateSide(stonesPerPit : int) = 
+let CreateBoard stonesPerPit =
+    let CreateSide stonesPerPit = 
         Array.init 7 (fun i -> if i = 0 then 0 else stonesPerPit)
-
-    new BoardState(CreateSide(stonesPerPit), CreateSide(stonesPerPit))
+    new BoardState(CreateSide stonesPerPit, CreateSide stonesPerPit)
 
 let CanPlay (state : BoardState) player pit =
         if (player < state.Sides.Length && pit < state.Sides.[0].Length)
