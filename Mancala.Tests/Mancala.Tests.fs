@@ -63,27 +63,39 @@ let BoardWithEmptyPitsOnOneSideIsFinished() =
 [<Fact>]
 let PlayRedistributesStonesOnPlayersSide() =
     let state = CreateBoard(3)
-    let newState = Play state 0 6
+    let newState, _ = Play state 0 6
     Assert.Equal<int[]> ([|0;3;3;4;4;4;0|], newState.Sides.[0])
     Assert.Equal<int[]> ([|0;3;3;3;3;3;3|], newState.Sides.[1])
 
 [<Fact>]
 let PlayRedistributesStonesIntoScoring() =
     let state = CreateBoard(3)
-    let newState = Play state 0 3
+    let newState, _ = Play state 0 3
     Assert.Equal<int[]> ([|1;4;4;0;3;3;3|], newState.Sides.[0])
     Assert.Equal<int[]> ([|0;3;3;3;3;3;3|], newState.Sides.[1])
 
 [<Fact>]
 let PlayRedistributesStonesIntoOpponentsSide() =
     let state = CreateBoard(3)
-    let newState = Play state 0 1
+    let newState, _ = Play state 0 1
     Assert.Equal<int[]> ([|1;0;3;3;3;3;3|], newState.Sides.[0])
     Assert.Equal<int[]> ([|0;3;3;3;3;4;4|], newState.Sides.[1])
 
 [<Fact>]
 let PlayRedistributesStonesIntoBothSides() =
     let state = CreateBoard(3)
-    let newState = Play state 0 2
+    let newState, _ = Play state 0 2
     Assert.Equal<int[]> ([|1;4;0;3;3;3;3|], newState.Sides.[0])
     Assert.Equal<int[]> ([|0;3;3;3;3;3;4|], newState.Sides.[1])
+
+[<Fact>]
+let PlayThatDoesNotEndAtStoreSwitchesPlayers() =
+    let state = CreateBoard(3)
+    let _, nextPlayer = Play state 0 4
+    Assert.Equal (1, nextPlayer)
+
+[<Fact>]
+let PlayThatEndsAtStoreKeepsPlayer() =
+    let state = CreateBoard(3)
+    let _, nextPlayer = Play state 0 3
+    Assert.Equal (0, nextPlayer)

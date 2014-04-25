@@ -19,45 +19,47 @@ let IsFinished(state : BoardState) =
         side.[1..6] |> Array.sum = 0
     finished state.Sides.[0] || finished state.Sides.[1]
 
-let IncrementPit (state : BoardState) player pit =
+let IncrementPit (state : BoardState) side pit =
     let Increment (side : int array) pit =
         Array.append side.[0..(pit-1)] (Array.append [|(side.[pit] + 1)|] side.[(pit+1)..])
-    match player with
+    match side with
     | 0 -> new BoardState(Increment state.Sides.[0] pit, state.Sides.[1])
     | _ -> new BoardState(state.Sides.[0], Increment state.Sides.[1] pit)
 
     
-let EmptyPit (state : BoardState) player pit =
+let EmptyPit (state : BoardState) side pit =
     let Empty (side : int array) pit =
         Array.append side.[0..(pit-1)] (Array.append [|0|] side.[(pit+1)..])
-    match player with
+    match side with
     | 0 -> new BoardState(Empty state.Sides.[0] pit, state.Sides.[1])
     | _ -> new BoardState(state.Sides.[0], Empty state.Sides.[1] pit)
     
-let NextPlayerAndPit player pit =
-    let OtherPlayer player =
-        match player with
-        | 0 -> 1
-        | _ -> 0
-    match pit with
-    | 0 -> OtherPlayer player, 6
-    | _ -> player, (pit - 1)
+let OtherPlayer side =
+    match side with
+    | 0 -> 1
+    | _ -> 0
 
-let rec Distribute (state : BoardState) player pit count =
+let NextSideAndPit side pit =
+    match pit with
+    | 0 -> OtherPlayer side, 6
+    | _ -> side, (pit - 1)
+
+let rec Distribute (state : BoardState) side pit count =
     match count with
     | 0 -> state
-    | 1 -> IncrementPit state player pit
+    | 1 -> IncrementPit state side pit
     | _ -> 
-        let nextPlayer, nextPit = NextPlayerAndPit player pit  
-        Distribute (IncrementPit state player pit) nextPlayer nextPit (count-1)
+        let nextSide, nextPit = NextSideAndPit side pit  
+        Distribute (IncrementPit state side pit) nextSide nextPit (count-1)
 
-let Redistribute (state : BoardState) player pit =
-    let count = state.Sides.[player].[pit]
-    let nextPlayer, nextPit = NextPlayerAndPit player pit
-    Distribute (EmptyPit state player pit) nextPlayer nextPit count
+let Redistribute (state : BoardState) side pit =
+    let count = state.Sides.[side].[pit]
+    let nextPlayer = if count = pit then side else OtherPlayer side
+    let nextSide, nextPit = NextSideAndPit side pit
+    (Distribute (EmptyPit state side pit) nextSide nextPit count), nextPlayer
 
 let Play (state : BoardState) player pit =
     match CanPlay state player pit with
-    | false -> state
+    | false -> state, player
     | true -> Redistribute state player pit 
-    
+
