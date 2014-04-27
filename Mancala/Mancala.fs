@@ -1,7 +1,7 @@
 ﻿module Mancala
 
 type BoardState(side1, side2) = 
-    member x.Sides = [| side1; side2 |]
+    member x.Sides = [side1; side2]
 
 let CreateBoard stonesPerPit =
     let CreateSide stonesPerPit = 
