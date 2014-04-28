@@ -103,6 +103,14 @@ let rec AutoMoveRec (state : BoardState) player best =
 
 let AutoMove (state : BoardState) player = 
     AutoMoveRec state player None
+
+let Winner (state : BoardState) =
+    match IsFinished state with
+    | false -> None
+    | true -> 
+        if (state.Sides.[0].[0] > state.Sides.[1].[0]) then Some(0)
+        elif (state.Sides.[0].[0] < state.Sides.[1].[0]) then Some(1)
+        else None
         
 
 

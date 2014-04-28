@@ -19,6 +19,13 @@ let GetMove player =
         
 let DisplayMove player move =
     printf "Player %d moved %d\n" (player+1) move
+
+let DisplayWinner player = 
+    match player with
+    | None -> printf "\nA Draw!\n"
+    | Some(x) -> printf "\nThe winner was Player %d\n" (x+1)
+
+    ignore (Console.ReadLine())
         
 [<EntryPoint>]
 let main argv = 
@@ -35,4 +42,5 @@ let main argv =
         board <- newboard
         player <- newplayer
         DisplayBoard board player
+    DisplayWinner (Mancala.Winner board)
     0 // return an integer exit code
