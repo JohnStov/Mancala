@@ -62,3 +62,47 @@ let Play (state : BoardState) player pit =
     | false -> state, player
     | true -> Redistribute state player pit 
 
+let TwoMovePlay (side : int array) =
+    let pits = side.[1..6]
+    let secondMovePits = Array.mapi (fun i x -> if x = i + 1 then x else 0) pits
+    try
+        Some(Array.find (fun x -> x > 0) secondMovePits)
+    with
+    | :? System.Collections.Generic.KeyNotFoundException -> None
+
+let BestPlay (side : int array) =
+    let pits = side.[1..6]
+    (Array.findIndex (fun x -> x = Array.max pits) pits) + 1
+
+let rec BestMove (side : int array) =
+    match TwoMovePlay side with
+    | Some(x) -> x
+    | None -> BestPlay side
+
+let rec AutoMoveRec (state : BoardState) player best =       
+    let side = state.Sides.[player]
+
+    match side, best with
+    | [|_;0;0;0;0;0;0|], None -> 6
+    | [|_;0;0;0;0;0;0|], Some(x) -> x
+    | _, _ ->
+        let move = BestMove side
+
+        let outcome, _ = Play state player move
+        let otherSide = outcome.Sides.[OtherPlayer player]
+        match TwoMovePlay otherSide with
+        | None -> move
+        | Some(_) -> 
+            let newBest = 
+                match best with
+                | None -> move
+                | Some(x) -> x
+
+            let newState = EmptyPit state player move
+            AutoMoveRec newState player (Some(newBest))
+
+let AutoMove (state : BoardState) player = 
+    AutoMoveRec state player None
+        
+
+

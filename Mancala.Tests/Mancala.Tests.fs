@@ -99,3 +99,21 @@ let ``Play That Ends At Store Gives Player Another Turn``() =
     let state = CreateBoard(3)
     let _, nextPlayer = Play state 0 3
     Assert.Equal (0, nextPlayer)
+
+[<Fact>]
+let ``Automove picks smallest pit that will give another go``() =
+    let state = new BoardState([|0;0;0;3;4;0;0|], [|0;3;3;3;3;3;3;3|])
+    let move = Mancala.AutoMove state 0
+    Assert.Equal (3, move)
+
+[<Fact>]
+let ``If no second turn available Automove picks biggest pile``() =
+    let state = new BoardState([|0;0;3;4;0;0;0|], [|0;3;3;3;3;3;3;3|])
+    let move = Mancala.AutoMove state 0
+    Assert.Equal (3, move)
+
+[<Fact>]
+let ``AutoMove tries to prevent opponent getting second move``() =
+    let state = new BoardState([|0;3;1;0;0;0;0|], [|0;0;0;0;0;4;1|])
+    let move = Mancala.AutoMove state 0
+    Assert.Equal (2, move)

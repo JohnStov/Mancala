@@ -17,13 +17,20 @@ let GetMove player =
         input <- char (Console.Read())
     (int input) - (int '0')
         
+let DisplayMove player move =
+    printf "Player %d moved %d\n" (player+1) move
+        
 [<EntryPoint>]
 let main argv = 
     let mutable player = 0
     let mutable board = Mancala.CreateBoard 3
     DisplayBoard board player
     while (not (Mancala.IsFinished board)) do
-        let move = GetMove player
+        let move = 
+            if (player = 0) 
+            then GetMove player
+            else Mancala.AutoMove board player
+        DisplayMove player move
         let newboard, newplayer = Mancala.Play board player move
         board <- newboard
         player <- newplayer
