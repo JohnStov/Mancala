@@ -117,3 +117,21 @@ let ``AutoMove tries to prevent opponent getting second move``() =
     let state = new BoardState([|0;3;1;0;0;0;0|], [|0;0;0;0;0;4;1|])
     let move = Mancala.AutoMove state 0
     Assert.Equal (2, move)
+
+[<Fact>]
+let ``Player 1 has won``() =
+    let state = new BoardState([|10;3;1;0;0;0;0|], [|9;0;0;0;0;0;0|])
+    let winner = Mancala.Winner state
+    Assert.Equal (0, winner.Value)
+
+[<Fact>]
+let ``Game is drawn``() =
+    let state = new BoardState([|10;3;1;0;0;0;0|], [|10;0;0;0;0;0;0|])
+    let winner = Mancala.Winner state
+    Assert.True (winner.IsNone)
+
+[<Fact>]
+let ``No winner if game is not finished``() =
+    let state = new BoardState([|10;3;1;0;0;0;0|], [|8;1;0;0;0;0;0|])
+    let winner = Mancala.Winner state
+    Assert.True (winner.IsNone)
