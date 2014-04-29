@@ -4,11 +4,11 @@
 open System
 open Mancala
 
-let DisplayBoard (board : BoardState) player =
+let DisplayBoard (board : int list list) player =
     let top = player
     let bottom = Mancala.OtherPlayer player
-    printf "\nPlayer %d : (%d) %d %d %d %d %d %d\n" (top + 1) board.Sides.[top].[0] board.Sides.[top].[1] board.Sides.[top].[2] board.Sides.[top].[3] board.Sides.[top].[4] board.Sides.[top].[5] board.Sides.[top].[6]
-    printf "Player %d :     %d %d %d %d %d %d (%d)\n\n"  (bottom + 1) board.Sides.[bottom].[6] board.Sides.[bottom].[5] board.Sides.[bottom].[4] board.Sides.[bottom].[3] board.Sides.[bottom].[2] board.Sides.[bottom].[1] board.Sides.[bottom].[0]
+    printf "\nPlayer %d : (%d) %d %d %d %d %d %d\n" (top + 1) board.[top].[0] board.[top].[1] board.[top].[2] board.[top].[3] board.[top].[4] board.[top].[5] board.[top].[6]
+    printf "Player %d :     %d %d %d %d %d %d (%d)\n\n"  (bottom + 1) board.[bottom].[6] board.[bottom].[5] board.[bottom].[4] board.[bottom].[3] board.[bottom].[2] board.[bottom].[1] board.[bottom].[0]
 
 let GetMove player =
     printf "Player %d - Select Move (1-6):" (player+1)
