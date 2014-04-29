@@ -12,7 +12,7 @@ let CanPlay (board : int list list) player pit =
 
 let IsFinished (board : int list list) = 
     let finished side = 
-        List.tail side |> List.sum = 0
+        side |> List.tail |> List.sum = 0
     finished board.[0] || finished board.[1]
 
 let IncrementPit (board : int list list) playerSide pit =
@@ -41,49 +41,49 @@ let OtherPlayer side =
     | 0 -> 1
     | _ -> 0
 
-let NextSideAndPit side pit =
-    match pit with
-    | 0 -> OtherPlayer side, 6
-    | _ -> side, (pit - 1)
-
-let rec Distribute board side pit count =
-    match count with
-    | 0 -> board
-    | 1 -> IncrementPit board side pit
-    | _ -> 
-        let nextSide, nextPit = NextSideAndPit side pit  
-        Distribute (IncrementPit board side pit) nextSide nextPit (count-1)
-
-let Redistribute (board : int list list) side pit =
-    let count = board.[side].[pit]
-    let nextPlayer = if count = pit then side else OtherPlayer side
-    let nextSide, nextPit = NextSideAndPit side pit
-    (Distribute (EmptyPit board side pit) nextSide nextPit count), nextPlayer
-
 let Play board player pit =
+    let NextSideAndPit side pit =
+        match pit with
+        | 0 -> OtherPlayer side, 6
+        | _ -> side, (pit - 1)
+
+    let Redistribute (board : int list list) side pit =
+        let rec Distribute board side pit count =
+            match count with
+            | 0 -> board
+            | 1 -> IncrementPit board side pit
+            | _ -> 
+                let nextSide, nextPit = NextSideAndPit side pit  
+                Distribute (IncrementPit board side pit) nextSide nextPit (count-1)
+
+        let count = board.[side].[pit]
+        let nextPlayer = if count = pit then side else OtherPlayer side
+        let nextSide, nextPit = NextSideAndPit side pit
+        (Distribute (EmptyPit board side pit) nextSide nextPit count), nextPlayer
+
     match CanPlay board player pit with
     | false -> board, player
     | true -> Redistribute board player pit 
 
 let TwoMovePlay side =
-    let pits = List.tail side
+    let pits = side |> List.tail
     let secondMovePits = List.mapi (fun i x -> if x = i + 1 then x else 0) pits
     try
         Some(List.find (fun x -> x > 0) secondMovePits)
     with
     | :? System.Collections.Generic.KeyNotFoundException -> None
 
-let BestPlay side =
-    let pits = List.tail side
-    (List.findIndex (fun x -> x = List.max pits) pits) + 1
-
-let rec BestMove side =
-    match TwoMovePlay side with
-    | Some(x) -> x
-    | None -> BestPlay side
-
 let AutoMove board player = 
-    let rec AutoMoveRec (board : int list list) player best =       
+    let rec BestMove side =
+        let BestPlay side =
+            let pits = side |> List.tail 
+            (List.findIndex (fun x -> x = List.max pits) pits) + 1
+
+        match TwoMovePlay side with
+        | Some(x) -> x
+        | None -> BestPlay side
+
+    let rec AutoMoveRecursive (board : int list list) player best =       
         let side = board.[player]
 
         match side, best with
@@ -103,9 +103,9 @@ let AutoMove board player =
                     | Some(x) -> x
 
                 let newboard = EmptyPit board player move
-                AutoMoveRec newboard player (Some(newBest))
+                AutoMoveRecursive newboard player (Some(newBest))
 
-    AutoMoveRec board player None
+    AutoMoveRecursive board player None
 
 let Winner board =
     match IsFinished board with
