@@ -21,8 +21,8 @@ let ``Side Two Has Seven Pits``() =
 [<Fact>]
 let ``Board Can Be Initialised With 3 Stones Per Pit``() =
     let state = CreateBoard(3)
-    Assert.Equal<int[]> ([|0;3;3;3;3;3;3|], state.Sides.[0])
-    Assert.Equal<int[]> ([|0;3;3;3;3;3;3|], state.Sides.[1])
+    Assert.True ([0;3;3;3;3;3;3] = state.Sides.[0])
+    Assert.True ([0;3;3;3;3;3;3] = state.Sides.[1])
 
 [<Fact>]
 let ``Player Cannot Play Invalid Side``() =
@@ -64,29 +64,29 @@ let ``Board With Empty Pits On One Side Is Finished``() =
 let ``Play Redistributes Stones On Player's Side``() =
     let state = CreateBoard(3)
     let newState, _ = Play state 0 6
-    Assert.Equal<int[]> ([|0;3;3;4;4;4;0|], newState.Sides.[0])
-    Assert.Equal<int[]> ([|0;3;3;3;3;3;3|], newState.Sides.[1])
+    Assert.True ([0;3;3;4;4;4;0] = newState.Sides.[0])
+    Assert.True ([0;3;3;3;3;3;3] = newState.Sides.[1])
 
 [<Fact>]
 let ``Play Redistributes Stones Into Store``() =
     let state = CreateBoard(3)
     let newState, _ = Play state 0 3
-    Assert.Equal<int[]> ([|1;4;4;0;3;3;3|], newState.Sides.[0])
-    Assert.Equal<int[]> ([|0;3;3;3;3;3;3|], newState.Sides.[1])
+    Assert.True ([1;4;4;0;3;3;3] = newState.Sides.[0])
+    Assert.True ([0;3;3;3;3;3;3] = newState.Sides.[1])
 
 [<Fact>]
 let ``Play Redistributes Stones Into Opponents Side``() =
     let state = CreateBoard(3)
     let newState, _ = Play state 0 1
-    Assert.Equal<int[]> ([|1;0;3;3;3;3;3|], newState.Sides.[0])
-    Assert.Equal<int[]> ([|0;3;3;3;3;4;4|], newState.Sides.[1])
+    Assert.True ([1;0;3;3;3;3;3] = newState.Sides.[0])
+    Assert.True ([0;3;3;3;3;4;4] = newState.Sides.[1])
 
 [<Fact>]
 let ``Play Redistributes Stones Into Both Sides``() =
     let state = CreateBoard(3)
     let newState, _ = Play state 0 2
-    Assert.Equal<int[]> ([|1;4;0;3;3;3;3|], newState.Sides.[0])
-    Assert.Equal<int[]> ([|0;3;3;3;3;3;4|], newState.Sides.[1])
+    Assert.True ([1;4;0;3;3;3;3] = newState.Sides.[0])
+    Assert.True ([0;3;3;3;3;3;4] = newState.Sides.[1])
 
 [<Fact>]
 let ``Play That Does Not End At Store Switches Players``() =
@@ -102,36 +102,36 @@ let ``Play That Ends At Store Gives Player Another Turn``() =
 
 [<Fact>]
 let ``Automove picks smallest pit that will give another go``() =
-    let state = new BoardState([|0;0;0;3;4;0;0|], [|0;3;3;3;3;3;3;3|])
+    let state = new BoardState([0;0;0;3;4;0;0], [0;3;3;3;3;3;3;3])
     let move = Mancala.AutoMove state 0
     Assert.Equal (3, move)
 
 [<Fact>]
 let ``If no second turn available Automove picks biggest pile``() =
-    let state = new BoardState([|0;0;3;4;0;0;0|], [|0;3;3;3;3;3;3;3|])
+    let state = new BoardState([0;0;3;4;0;0;0], [0;3;3;3;3;3;3;3])
     let move = Mancala.AutoMove state 0
     Assert.Equal (3, move)
 
 [<Fact>]
 let ``AutoMove tries to prevent opponent getting second move``() =
-    let state = new BoardState([|0;3;1;0;0;0;0|], [|0;0;0;0;0;4;1|])
+    let state = new BoardState([0;3;1;0;0;0;0], [0;0;0;0;0;4;1])
     let move = Mancala.AutoMove state 0
     Assert.Equal (2, move)
 
 [<Fact>]
 let ``Player 1 has won``() =
-    let state = new BoardState([|10;3;1;0;0;0;0|], [|9;0;0;0;0;0;0|])
+    let state = new BoardState([10;3;1;0;0;0;0], [9;0;0;0;0;0;0])
     let winner = Mancala.Winner state
     Assert.Equal (0, winner.Value)
 
 [<Fact>]
 let ``Game is drawn``() =
-    let state = new BoardState([|10;3;1;0;0;0;0|], [|10;0;0;0;0;0;0|])
+    let state = new BoardState([10;3;1;0;0;0;0], [10;0;0;0;0;0;0])
     let winner = Mancala.Winner state
     Assert.True (winner.IsNone)
 
 [<Fact>]
 let ``No winner if game is not finished``() =
-    let state = new BoardState([|10;3;1;0;0;0;0|], [|8;1;0;0;0;0;0|])
+    let state = new BoardState([10;3;1;0;0;0;0], [8;1;0;0;0;0;0])
     let winner = Mancala.Winner state
     Assert.True (winner.IsNone)
